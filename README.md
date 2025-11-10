@@ -46,4 +46,4 @@ This project preserves the original procedural logic while reorganizing it into 
 
 ```bash
 git clone https://github.com/Aregay01/Tigrinya-Number-Speller.git
-cd number-speller-tigrinya
+cd Tigrinya-Number-Speller
