@@ -51,48 +51,51 @@ class NumberSpeller:
         return spelling_list  # return the possibly-modified list
 
     def int_speller(self, n: int, spelling_list, index):
-        # Main recursive spelling routine for integer parts; keeps original logic
-        csb = 1  # current significant base initialized to 1 as in original logic
-        for key in self.base_number:  # iterate over base_number keys in insertion order
-            if n < key:  # when n is less than current key, compute quotient/remainder using csb
-                quatient = n // csb  # integer division to get how many csb units in n
-                spelling = self.base_number[csb]  # get the spelling for the csb base
-                remainder = n % csb  # compute the remainder after removing csb multiples
+        if n in self.base_number:
+            return self.base_number[n]
+        else:
+            # Main recursive spelling routine for integer parts; keeps original logic
+            csb = 1  # current significant base initialized to 1 as in original logic
+            for key in self.base_number:  # iterate over base_number keys in insertion order
+                if n < key:  # when n is less than current key, compute quotient/remainder using csb
+                    quatient = n // csb  # integer division to get how many csb units in n
+                    spelling = self.base_number[csb]  # get the spelling for the csb base
+                    remainder = n % csb  # compute the remainder after removing csb multiples
 
-                if remainder != 0:
-                    spelling += "ን"  # append the "ን" suffix when remainder exists
+                    if remainder != 0:
+                        spelling += "ን"  # append the "ን" suffix when remainder exists
 
-                if remainder in self.base_number:
-                    remainder = self.base_number[remainder] + "ን"  # map remainder to word + suffix when possible
+                    if remainder in self.base_number:
+                        remainder = self.base_number[remainder] + "ን"  # map remainder to word + suffix when possible
 
-                spelling_list[index:index + 1] = [quatient, spelling, remainder]  # replace slice with new items
+                    spelling_list[index:index + 1] = [quatient, spelling, remainder]  # replace slice with new items
 
-                index = 0  # reset index to walk and convert integer items to words
-                for item in spelling_list:  # iterate through spelling_list
-                    if isinstance(item, int):  # only handle integer items
-                        if item in self.base_number:
-                            spelling_list[index] = self.base_number[item]  # replace known base ints with words
-                        else:
-                            self.int_speller(item, spelling_list, index)  # recursively spell non-base integer items
-                    index += 1  # increment index after handling item
+                    index = 0  # reset index to walk and convert integer items to words
+                    for item in spelling_list:  # iterate through spelling_list
+                        if isinstance(item, int):  # only handle integer items
+                            if item in self.base_number:
+                                spelling_list[index] = self.base_number[item]  # replace known base ints with words
+                            else:
+                                self.int_speller(item, spelling_list, index)  # recursively spell non-base integer items
+                        index += 1  # increment index after handling item
 
-                sanitized = self.int_sanitiser(spelling_list)  # sanitise list according to int_sanitiser rules
-                return sanitized  # return sanitized list once processed
-            csb = key  # update csb to current key for next iteration
+                    sanitized = self.int_sanitiser(spelling_list)  # sanitise list according to int_sanitiser rules
+                    return sanitized  # return sanitized list once processed
+                csb = key  # update csb to current key for next iteration
 
     def spell(self, n):
         # Public API: spell the given number n and return its spelling as a string
         # handle types and create working copies to avoid mutating caller's data
-        try:
-            n_val = float(n)  # attempt to coerce input to float
-        except Exception:
-            raise ValueError("Input must be a number or numeric string")  # raise clear error on invalid input
-
+        # try:
+        #     n_val = float(n)  # attempt to coerce input to float
+        # except Exception:
+        #     raise ValueError("Input must be a number or numeric string")  # raise clear error on invalid input
+        n_val = n
         n_sign = -1 if n_val < 0 else 1  # determine sign of the number
         number = abs(n_val)  # work with absolute value for spelling
         spelling_list = [0]  # initialize spelling list as the original code did
-        if int(n_val) == 0:
-            int_part_spelling = [self.decimal_digit[0]]  # if integer part is zero, use decimal_digit[0]
+        if int(n_val) in self.decimal_digit:
+            int_part_spelling = [self.decimal_digit[n_val]]  # if integer part is zero, use decimal_digit[0]
             sign = []  # empty sign list when zero
         else:
             int_part_spelling = self.int_speller(int(number), spelling_list, 0)  # call int_speller for integer part
@@ -135,5 +138,5 @@ class NumberSpeller:
 # Example usage: create an instance and spell the example number (mirrors original main)
 if __name__ == "__main__":
     sp = NumberSpeller()  # instantiate the speller class
-    result = sp.spell(-230.41)  # spell the example number -230.41
+    result = sp.spell(72301)  # spell the example number -230.41
     print("spelling:", result)  # print the resulting spelling string
