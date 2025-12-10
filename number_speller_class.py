@@ -7,6 +7,10 @@ class NumberSpeller:
         10: "ዓሰርተ",
     }  # maps single digits to their spellings
     # a larger base mapping used by the main spelling routine
+    grading_digit ={
+        "1ይ": "ቀዳማይ", "2ይ" : "ካልኣይ", "3ይ" :"ሳልሳይ","4ይ" :"ራብዓይ","5ይ" :"ሓምሻይ",
+        "6ይ" :"ሻድሻይ","7ይ" : "ሻውዓይ","8ይ" :"ሻምናይ","9ይ" :"ታሽዓይ" , "10ይ" : "ዓስራይ"
+    }
     base_number = {
         0: "ዜሮ", 1: "ሓደ", 2: "ክልተ", 3: "ሰለስተ", 4: "ኣርባዕተ",
         5: "ሓሙሽስተ", 6: "ሽድስተ", 7: "ሸዋዕተ", 8: "ሾሞንተ", 9: "ትሽዓተ",
