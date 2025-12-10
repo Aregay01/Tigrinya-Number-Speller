@@ -19,12 +19,25 @@ class NumberSpeller:
         100: "ሚእቲ", 1000: "ሽሕ", 10**6: "ሚሊዮን", 10**9: "ቢሊዮን",
     }  # maps bases (tens, hundreds, thousands...) to spellings
     # second-base mapping (tens) copied from base_number for convenience
+    Teen_number = {
+        11 : "ዓሰርተ ሓደ",
+        12 : "ዓሰርተ ክልተ",
+        13 : "ዓሰርተ ሰለስተ",
+        14 : "ዓሰርተ ኣርባዕተ",
+        15 : "ዓሰርተ ሓሙሽስተ",
+        16 : "ዓሰርተ ሽድስተ",
+        17 : "ዓሰርተ ሸዋዕተ",
+        18 : "ዓሰርተ ሾሞንተ",
+        19 : "ዓሰርተ ትሽዓተ",
+    }
+    all_base = base_number | Teen_number
     Base_2 = {
         10: "ዓሰርተ", 20: "ዒስራ", 30: "ሰላሳ", 40: "ኣርብዓ",
         50: "ሓምሳ", 60: "ስሳ", 70: "ሰብዓ", 80: "ሰማንያ", 90: "ቴስዓ",
     }  # maps the tens to spellings
     # append the 'ን' suffix to the Base_2 mappings and store as a separate dict
     Base_2_with_ን = {k: v + "ን" for k, v in Base_2.items()}  # tens with suffix
+
 
     def __init__(self):
         # constructor does nothing special but is present for extensibility
@@ -55,8 +68,8 @@ class NumberSpeller:
         return spelling_list  # return the possibly-modified list
 
     def int_speller(self, n: int, spelling_list, index):
-        if n in self.base_number:
-            return self.base_number[n]
+        if n in self.all_base:
+            return self.all_base[n]
         else:
             # Main recursive spelling routine for integer parts; keeps original logic
             csb = 1  # current significant base initialized to 1 as in original logic
@@ -69,16 +82,18 @@ class NumberSpeller:
                     if remainder != 0:
                         spelling += "ን"  # append the "ን" suffix when remainder exists
 
-                    if remainder in self.base_number:
-                        remainder = self.base_number[remainder] + "ን"  # map remainder to word + suffix when possible
-
+                    if (remainder in self.all_base):
+                        if remainder !=0:
+                            remainder = self.all_base[remainder] + "ን"  # map remainder to word + suffix when possible
+                        else:
+                            remainder = ""
                     spelling_list[index:index + 1] = [quatient, spelling, remainder]  # replace slice with new items
 
                     index = 0  # reset index to walk and convert integer items to words
                     for item in spelling_list:  # iterate through spelling_list
                         if isinstance(item, int):  # only handle integer items
-                            if item in self.base_number:
-                                spelling_list[index] = self.base_number[item]  # replace known base ints with words
+                            if item in self.all_base:
+                                spelling_list[index] = self.all_base[item]  # replace known base ints with words
                             else:
                                 self.int_speller(item, spelling_list, index)  # recursively spell non-base integer items
                         index += 1  # increment index after handling item
@@ -106,7 +121,7 @@ class NumberSpeller:
         if n_val < 0:
             sign = ["ኣሉታ"]  # negative sign word when original number negative
         else:
-            sign = ""  # empty string when non-negative
+            sign = []  # empty string when non-negative
         if isinstance(number, float):
             fractional = str(number).split('.')[1]  # get fractional part as string after decimal point
             point = ["ነጥቢ"]  # decimal point word
@@ -142,5 +157,6 @@ class NumberSpeller:
 # Example usage: create an instance and spell the example number (mirrors original main)
 if __name__ == "__main__":
     sp = NumberSpeller()  # instantiate the speller class
-    result = sp.spell(72301)  # spell the example number -230.41
+    result = sp.spell(14512)  # spell the example number -230.41
     print("spelling:", result)  # print the resulting spelling string
+
